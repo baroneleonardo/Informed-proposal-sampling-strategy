@@ -1,6 +1,8 @@
 # BNP-Change-Point-Functional
+Project of Bayesian Statistics Course 
 
-Here are reported the code that allows to replicate the simulative results obtained in the paper *"Bayesian nonparametric change point detection for multivariate time series with missing observations"*.
+Starting from the code that allows to replicate the simulative results obtained in the paper *"Bayesian nonparametric change point detection for multivariate time series with missing observations"*.
+
 
 The process is divided in files as following: 
 
