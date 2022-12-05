@@ -11,7 +11,13 @@ library("FAdist")
 library("combinat")
 library("mvtnorm")
 
-setwd("C:\\Users\\danes\\Desktop\\Tesi\\Codice\\Codici_articolo")
+#setwd("C:\\Users\\danes\\Desktop\\Tesi\\Codice\\Codici_articolo")
+setwd("C:\\Users\\Leonardo\\Documents\\POLIMI\\Bayesian-Project\\Informed-proposal-sampling-strategy")
+
+## IMPORT R function
+source("01_funzioni_log_fun_art_miss.R")
+source("02_verosomiglianza_log_fun_art_miss.R")
+source("03_alpha_log_fun_art_miss.R")
 
 # SEED --------
 
@@ -25,7 +31,7 @@ list_of_sigma <- list()
 list_of_theta <- list()
 VI_vec <- as.numeric()
 
-for(sim in 1:50){
+for(sim in 1:1){   # 50
 
 # DATA SIMULATION --------
 
@@ -401,7 +407,7 @@ for(step in 1:Nsim){
   # EFFECTIVE SAMPLE SIZE 
   
   effective_sample[step] = length(rho_n) - 1 
-  
+  print(rho_n)
   
 }
 
@@ -413,7 +419,7 @@ partitions_no_burn_in <- partitions[(1*10^3 + 1):length(partitions)] #remove bur
 
 sourceCpp("wade.cpp") # SPOSTARE IL FILE NELLA STESSA CARTELLA DEL CODICE
 
-X <- matrix(data = NA, nrow = 100000, ncol = 300)
+X <- matrix(data = NA, nrow = length(partitions) - 1*10^3, ncol = 300)
 
 for (i in 1:length(partitions_no_burn_in)){
   for (j in 1:length(partitions_no_burn_in[[i]])){
