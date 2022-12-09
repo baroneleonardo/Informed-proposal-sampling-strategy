@@ -18,6 +18,7 @@ setwd("C:\\Users\\Leonardo\\Documents\\POLIMI\\Bayesian-Project\\Informed-propos
 source("01_funzioni_log_fun_art_miss.R")
 source("02_verosomiglianza_log_fun_art_miss.R")
 source("03_alpha_log_fun_art_miss.R")
+source("ProjectFunction.R")
 
 # SEED --------
 
@@ -495,8 +496,3 @@ mean(VI_vec) #AVERAGE VALUE OF VI
 print(mean(unlist(list_of_gamma))) #ESTIMATED GAMMA
 print(mean(unlist(list_of_sigma))) #ESTIMATED SIGMA
 print(mean(unlist(list_of_theta))) #ESTIMATED THETA
-
-
-
-
-

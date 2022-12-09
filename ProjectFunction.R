@@ -1,6 +1,16 @@
 # Abbiamo un po' iniziato a scrivere il codice
 
-# Z_g(n) Normalization Costant -----------------------------------------------
+# g functions -----------------------------------------------------------------
+
+g_1 <- function(x){
+  return (sqrt(x))
+} 
+
+g_2 <- function(x){
+  return (x/(1+x))
+}
+
+# Z_g(n) Normalization Costant ------------------------------------------------
 
 Z_g <- function(y,rho_n, g){   # Da mettere il log
   
@@ -13,8 +23,8 @@ Z_g <- function(y,rho_n, g){   # Da mettere il log
   
   
   
-  # CASO UN SOLO GRUPPO
-  if( k==1 ){
+  # Just one group
+  if( k==1 & rho_n[1] !=1 ){
     for (l in 1:rho_n[1]-1){
       
       rho_temp <- c(l,rho_n[1]-l)
@@ -24,6 +34,7 @@ Z_g <- function(y,rho_n, g){   # Da mettere il log
     }
   }
   
+  # Just two groups
   if ( k==2 ){
     for (l in 1:rho_n[1]){
       ifelse(l != length(rho_n[1]), {rho_temp <- c(l,rho_n[1]-l,rho_n[2])},
@@ -31,19 +42,21 @@ Z_g <- function(y,rho_n, g){   # Da mettere il log
       post_rho_temp = posterior(length(rho_temp), gamma_splitting_MULTIVARIATE(y,rho_temp), rho_temp)
       out = out + g(post_rho_temp/post_rho)
     }
-    for (l in 1:rho_n[2]-1){
-      rho_temp <- c(rho_n[1],l,rho_n[2]-l)
-      post_rho_temp = posterior(length(rho_temp), gamma_splitting_MULTIVARIATE(y,rho_temp), rho_temp)
-      out = out + g(post_rho_temp/post_rho)
+    if(rho_n[2]!=1){
+      for (l in 1:rho_n[2]-1){
+        rho_temp <- c(rho_n[1],l,rho_n[2]-l)
+        post_rho_temp = posterior(length(rho_temp), gamma_splitting_MULTIVARIATE(y,rho_temp), rho_temp)
+        out = out + g(post_rho_temp/post_rho)
+      }
     }
   }
   
-  #  CASO CON GRUPPI INTERMEDI
+  #  More than two groups
   if( k>2 ){  
     for (j in 1 : length(rho_n)){
       for (l in 1 : rho_n[j]){
         
-        #  SPLIT E MERGE DIFFERENTE PER IL PRIMO GRUPPO
+        #  First group case (different split and merge)
           if( j==1 ){
               
               ifelse(l != length(rho_n[j]), {rho_temp <- c(l,rho_n[j]-l,rho_n[(j+1):length(rho_n)])}, # Split
@@ -54,15 +67,19 @@ Z_g <- function(y,rho_n, g){   # Da mettere il log
           }
           
           else{
+            
+            # Last group case
             if (j == k){
               
-              if( l!=length(rho_n(j)) ){
+              if( l!=length(rho_n[j]) ){
                 
                 rho_temp <- c(rho_n[1:(j-1)],l,rho_n[j]-l)
                 post_rho_temp = posterior(length(rho_temp), gamma_splitting_MULTIVARIATE(y,rho_temp), rho_temp)
                 out = out + g(post_rho_temp/post_rho)
               }
             }
+            
+            # Remaining case
             else{
               ifelse(l != length(rho_n[j]), {rho_temp <- c(rho_n[1:(j-1)],l,rho_n[j]-l,rho_n[(j+1):length(rho_n)])},
                      
