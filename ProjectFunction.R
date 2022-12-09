@@ -101,6 +101,7 @@ Z_g <- function(y,rho_n, g){   # Da mettere il log
 # alpha ---------------------------------------------------------------------
 
 # Just a draft
+# wrong written
 
 alpha <- function(y,j,rho_n_proposal,rho_n,m_0){
   
@@ -124,6 +125,7 @@ alpha <- function(y,j,rho_n_proposal,rho_n,m_0){
 # Q function ------------------------------------------------------------------
 
 # Just a draft
+# wrong written
 
 Q_f <- function(y, rho_n, rho_n_proposal, g, post_rho, post_rho_proposal){
   

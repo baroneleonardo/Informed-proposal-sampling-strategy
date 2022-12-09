@@ -5,24 +5,27 @@ split <- function(k,rho_n){
   
   output <- list()
   
-  z <- which(rho_n > 1)
+  z <- which(rho_n > 1) # Return a vector of the position of the group with element > 1
   
   if (length(z) != 0 ){
     
+   # If I have more than one group I choose with sample where to split 
     
   ifelse(length(z) != 1, {j <- sample(z,size = 1)}, {j <- z}) # we need to consider the case of a single partition sample
   
-    l <- sample(1:(rho_n[j]-1),1)
+    l <- sample(1:(rho_n[j]-1),1) # Choose an element in the j-group (exepet the last)
     
     if(j != 1){
       
+      # Split the j-group in [l; length(j-group)-l]
+      
       ifelse(j != length(rho_n), {rho_n <- c(rho_n[1:(j-1)],l,rho_n[j]-l,rho_n[(j+1):length(rho_n)])},
-           {rho_n <- c(rho_n[1:(j-1)],l,rho_n[j]-l)})
+           {rho_n <- c(rho_n[1:(j-1)],l,rho_n[j]-l)}) # If I'm in the last group
     
     k <- k + 1
       
     }
-    
+    # If I'm in the first group
     if(j == 1){
       
       ifelse(j != length(rho_n), {rho_n <- c(l,rho_n[j]-l,rho_n[(j+1):length(rho_n)])},
@@ -32,7 +35,7 @@ split <- function(k,rho_n){
   }
   
   output[[1]] = rho_n
-  output[[2]] = j
+  output[[2]] = j      # First group of the split
   
   return(output)
   
@@ -52,10 +55,10 @@ merge <- function(k,rho_n){
     
    j <- sample(1:(k-1),1)
   
-   u <- runif(1)
+   u <- runif(1) # ???
   
       ifelse(j != 1, {
-        ifelse(j == (length(rho_n) - 1),{rho_n <- c(rho_n <- c(rho_n[1:(j-1)],rho_n[j] + rho_n[(j+1)]))},
+        ifelse(j == (length(rho_n) - 1),{rho_n <- c(rho_n[1:(j-1)],rho_n[j] + rho_n[(j+1)])},
                             {rho_n <- c(rho_n[1:(j-1)],rho_n[j] + rho_n[(j+1)], rho_n[(j+2):length(rho_n)])})
                       },
         
