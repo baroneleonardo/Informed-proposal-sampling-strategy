@@ -20,9 +20,6 @@ Z_g <- function(y,rho_n, g){   # Da mettere il log
   rho_temp <- rho_n
   out = 0
   
-  
-  
-  
   # Just one group
   if( k==1 & rho_n[1] !=1 ){
     for (l in 1:rho_n[1]-1){
@@ -100,3 +97,43 @@ Z_g <- function(y,rho_n, g){   # Da mettere il log
   return (out)
   
   }
+
+# alpha ---------------------------------------------------------------------
+
+# Just a draft
+
+alpha <- function(y,j,rho_n_proposal,rho_n,m_0){
+  
+  gamma_k_proposal <- gamma_splitting_MULTIVARIATE(y,rho_n_proposal)
+  k_proposal <- length(rho_n_proposal)
+  
+  gamma_k <- gamma_splitting_MULTIVARIATE(y,rho_n)
+  k <- length(rho_n)
+  
+  post_rho = posterior(k, gamma_k, rho_n)
+  post_rho_proposal = posterior(k_proposal, gamma_k_proposal, rho_n_proposal)
+  
+  a1 = post_rho_proposal - post_rho + Q_f(y, rho_n, rho_n_proposal, g, post_rho, post_rho_proposal)
+  a2 = log(1)
+  
+  alpha = min(a1, a2)
+  
+  return(alpha)
+  }
+
+# Q function ------------------------------------------------------------------
+
+# Just a draft
+
+Q_f <- function(y, rho_n, rho_n_proposal, g, post_rho, post_rho_proposal){
+  
+  num = g(post_rho - post_rho_proposal)
+  den = g(post_rho_proposal - post_rho)
+  
+  z_n = Z_g(y, rho_n, g)
+  z_n_proposal = Z_g(y, rho_n_proposal, g)
+  
+  out = z_n - z_n_proposal + num - den
+  
+  return (out)
+}
