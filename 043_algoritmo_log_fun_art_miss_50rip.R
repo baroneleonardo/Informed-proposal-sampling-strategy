@@ -18,7 +18,7 @@ setwd("C:\\Users\\Leonardo\\Documents\\POLIMI\\Bayesian-Project\\Informed-propos
 source("01_funzioni_log_fun_art_miss.R")
 source("02_verosomiglianza_log_fun_art_miss.R")
 source("03_alpha_log_fun_art_miss.R")
-source("ProjectFunction.R")
+source("project.R")
 
 # SEED --------
 
@@ -205,7 +205,7 @@ for(step in 1:Nsim){
       
       u <- log(runif(1))
       
-      alpha = alpha_split(y,j_proposal,rho_n_proposal,rho_n)
+      alpha = our_alpha(y,rho_n_proposal,rho_n,m_0)
       
       if (u <= alpha){rho_n <- rho_n_proposal}
       
@@ -229,7 +229,7 @@ for(step in 1:Nsim){
     
     u <- log(runif(1))
     
-    alpha = alpha_merge(y,j_proposal,rho_n_proposal,rho_n)
+    alpha = our_alpha(y,rho_n_proposal,rho_n,m_0)
     
     if (u <= alpha){rho_n <- rho_n_proposal}
     
