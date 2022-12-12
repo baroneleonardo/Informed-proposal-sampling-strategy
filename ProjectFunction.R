@@ -98,12 +98,12 @@ Z_g <- function(y,rho_n, g){   # Da mettere il log
   
   }
 
-# alpha ---------------------------------------------------------------------
+# alpha -----------------------------------------------------------------------
 
 # Just a draft
 # wrong written
 
-alpha <- function(y,j,rho_n_proposal,rho_n,m_0){
+alpha <- function(y,rho_n_proposal,rho_n,m_0){
   
   gamma_k_proposal <- gamma_splitting_MULTIVARIATE(y,rho_n_proposal)
   k_proposal <- length(rho_n_proposal)
