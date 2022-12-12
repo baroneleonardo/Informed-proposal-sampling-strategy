@@ -1,6 +1,3 @@
-# FIRST SKETCH
-
-
 # FIRST SKETCH Z_g(n) FUNCTION USING g = sqrt(x) ------------------------------------------------
 
 Z_sqrt_x <- function(y,rho_n){           # INPUT: DATA y AND PARTITION rho_n (THE ACTUAL ONE OR THE PROPOSAL...)
