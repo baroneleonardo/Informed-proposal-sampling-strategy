@@ -9,7 +9,7 @@ Z_sqrt_x <- function(y,rho_n){           # INPUT: DATA y AND PARTITION rho_n (TH
   # 1ST CASE: ONLY THE FIRST GROUP
   
   if( k==1 & rho_n[1] !=1 ){                # IF IT HAS ONLY ONE ELEMENT, DO NOTHING
-    for (l in 1:rho_n[1]-1){                # FOR EACH ELEMENT WE DIVIDE pho_n IN 2 GROUPS
+    for (l in 1:rho_n[1]-1){                # FOR EACH ELEMENT WE DO A SPLIT
       
       rho_temp <- c(l,rho_n[1]-l)           # SPLIT IN TEMPORAL VARIABLE
       
@@ -22,7 +22,7 @@ Z_sqrt_x <- function(y,rho_n){           # INPUT: DATA y AND PARTITION rho_n (TH
   # 2ND CASE: ONLY THE FIRST AND LAST GROUPS
   
   if ( k==2 ){
-    for (l in 1:rho_n[1]){                 # FOR EACH ELEMENT EXCEPT THE LLAST ONE IN FIRST GROUP DO A SPLIT, 
+    for (l in 1:rho_n[1]){                 # FOR EACH ELEMENT EXCEPT THE LAST ONE IN FIRST GROUP DO A SPLIT, 
                                            # ON THE LAST ELEMENT DO A MERGE
       ifelse(l != length(rho_n[1]), {rho_temp <- c(l,rho_n[1]-l,rho_n[2])},
              {rho_temp <- c(rho_n[1]+rho_n[2])})
@@ -89,7 +89,7 @@ Z_sqrt_x <- function(y,rho_n){           # INPUT: DATA y AND PARTITION rho_n (TH
     }
   }
   gamma_k <- gamma_splitting_MULTIVARIATE(y,rho_n) # MATRIX OF DATA SPLITTED FOR POSTERIOR COMPUTATION
-  post_rho = posterior(k,gamma_k,rho_n)            # POSTERIOR OF GIVEN rho_n (IT'S ALREADY IN LOG!!!)
+  post_rho = posterior(k,gamma_k,rho_n)            # POSTERIOR OF GIVEN rho_n
   out = 0.5*(1 - post_rho) + log(out)              # FINAL VALUE OF Z_sqrt_x
   return (out)                       
   
@@ -120,7 +120,7 @@ alpha <- function(y,rho_n_proposal,rho_n,m_0){ # INPUT: DATA y,NEW POSSIBLE PART
   post_rho_proposal = posterior(k_proposal, gamma_k_proposal, rho_n_proposal)
   
   # TWO POSSIBILITY IN LOG
-  a1 = post_rho_proposal - post_rho + Q_fraction(y, rho_n, rho_n_proposal, g, post_rho, post_rho_proposal)
+  a1 = post_rho_proposal - post_rho + Q_fraction(y, rho_n, rho_n_proposal, post_rho, post_rho_proposal)
   a2 = log(1)
   
   # DECISION
