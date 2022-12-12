@@ -95,6 +95,16 @@ Z_sqrt_x <- function(y,rho_n){           # INPUT: DATA y AND PARTITION rho_n (TH
   
 }
 
+# FIRST SKETCH Q_fraction ------------------------------------------------------------------
+
+Q_fraction <- function(y, rho_n, rho_n_proposal, post_rho, post_rho_proposal){
+  
+  out = Z_sqrt_x(y, rho_n) - Z_sqrt_x(y, rho_n_proposal) + post_rho - post_rho_proposal
+  
+  return (out)
+}
+
+
 # FIRST SKETCH alpha FUNCTION ----------------------------------------------------------------------
 
 alpha <- function(y,rho_n_proposal,rho_n,m_0){ # INPUT: DATA y,NEW POSSIBLE PARTITION rho_n_proposal
@@ -109,8 +119,8 @@ alpha <- function(y,rho_n_proposal,rho_n,m_0){ # INPUT: DATA y,NEW POSSIBLE PART
   post_rho = posterior(k, gamma_k, rho_n)
   post_rho_proposal = posterior(k_proposal, gamma_k_proposal, rho_n_proposal)
   
-  # TWO POSSIBILITY IN LOG(SEE FUNCTION Q_f BELOW)
-  a1 = post_rho_proposal - post_rho + Q_f(y, rho_n, rho_n_proposal, g, post_rho, post_rho_proposal)
+  # TWO POSSIBILITY IN LOG
+  a1 = post_rho_proposal - post_rho + Q_fraction(y, rho_n, rho_n_proposal, g, post_rho, post_rho_proposal)
   a2 = log(1)
   
   # DECISION
@@ -119,11 +129,3 @@ alpha <- function(y,rho_n_proposal,rho_n,m_0){ # INPUT: DATA y,NEW POSSIBLE PART
   return(alpha)
 }
 
-# FIRST SKETCH Q_f FUNCTION ------------------------------------------------------------------
-#WRONGGGGGGG
-Q_f <- function(y, rho_n, rho_n_proposal, post_rho, post_rho_proposal){
-  
-  out = Z_sqrt_x(y, rho_n) - Z_sqrt_x(y, rho_n_proposal) + post_rho - post_rho_proposal
-  
-  return (out)
-}
