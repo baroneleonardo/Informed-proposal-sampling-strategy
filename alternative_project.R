@@ -1,10 +1,9 @@
 # FIRST SKETCH Z_g(n) FUNCTION USING g = sqrt(x) ------------------------------------------------
 
-Z_sqrt_x <- function(y,rho_n){              # INPUT: DATA y AND PARTITION rho_n (THE ACTUAL ONE OR THE PROPOSAL...)
+posteriors_vector <- function(y,rho_n){              # INPUT: DATA y AND PARTITION rho_n (THE ACTUAL ONE OR THE PROPOSAL...)
   
   rho_temp <- rho_n                         # TEMPORAL VARIABLE FOR NEIGHBOURHOODS
   k = length(rho_n)                         # NUMBER OF GROUPS
-  out = 0
   max_temp = numeric(0)
   post_vector <- as.numeric()
   count = 0
@@ -15,13 +14,13 @@ Z_sqrt_x <- function(y,rho_n){              # INPUT: DATA y AND PARTITION rho_n 
     for (l in 1:(rho_n[1]-1)){                # FOR EACH ELEMENT WE DO A SPLIT
       
       rho_temp <- c(l,rho_n[1]-l)           # SPLIT IN TEMPORAL VARIABLE
-       
+      
       # COMPUTATION OF POSTERIOR
       post_rho_temp = posterior(length(rho_temp), gamma_splitting_MULTIVARIATE(y,rho_temp), rho_temp)
       max_temp = max(max_temp, post_rho_temp)
       count = count + 1
       post_vector[count] = post_rho_temp
-              
+      
     }
   }
   
@@ -30,7 +29,7 @@ Z_sqrt_x <- function(y,rho_n){              # INPUT: DATA y AND PARTITION rho_n 
   if ( k==2 ){
     
     for (l in 1:rho_n[1]){                 # FOR EACH ELEMENT EXCEPT THE LAST ONE IN FIRST GROUP DO A SPLIT, 
-                                           # ON THE LAST ELEMENT DO A MERGE
+      # ON THE LAST ELEMENT DO A MERGE
       ifelse(l != rho_n[1], {rho_temp <- c(l,rho_n[1]-l,rho_n[2])},
              {rho_temp <- c(rho_n[1]+rho_n[2])})
       post_rho_temp = posterior(length(rho_temp), gamma_splitting_MULTIVARIATE(y,rho_temp), rho_temp)
@@ -48,7 +47,7 @@ Z_sqrt_x <- function(y,rho_n){              # INPUT: DATA y AND PARTITION rho_n 
         max_temp = max(max_temp, post_rho_temp)
         count = count + 1
         post_vector[count] = post_rho_temp
-      
+        
       }
     }
   }
@@ -87,7 +86,7 @@ Z_sqrt_x <- function(y,rho_n){              # INPUT: DATA y AND PARTITION rho_n 
               max_temp = max(max_temp, post_rho_temp)
               count = count + 1
               post_vector[count] = post_rho_temp
-              }
+            }
           }
           
           # INTERMEDIARY CASES
@@ -99,8 +98,8 @@ Z_sqrt_x <- function(y,rho_n){              # INPUT: DATA y AND PARTITION rho_n 
                    # MERGE PART WITH DIFFERENTIATION FOR THE SECOND-LAST GROUP
                    {
                      ifelse(j == (length(rho_n) - 1),{rho_temp <- c(rho_n[1:(j-1)],rho_n[j] + rho_n[(j+1)])},
-                           {rho_temp <- c(rho_n[1:(j-1)],rho_n[j] + rho_n[(j+1)], rho_n[(j+2):length(rho_n)])})
-                     })
+                            {rho_temp <- c(rho_n[1:(j-1)],rho_n[j] + rho_n[(j+1)], rho_n[(j+2):length(rho_n)])})
+                   })
             
             
             post_rho_temp = posterior(length(rho_temp), gamma_splitting_MULTIVARIATE(y,rho_temp), rho_temp)
@@ -116,20 +115,34 @@ Z_sqrt_x <- function(y,rho_n){              # INPUT: DATA y AND PARTITION rho_n 
       }
     }
   }
+  
+  return (post_vector)                       
+  
+}
+
+# Z_g function ----------------------------------------------------------------
+
+Z_sqrt_x <- function (y, rho_n){
+  
+  k = length(rho_n)
   gamma_k <- gamma_splitting_MULTIVARIATE(y,rho_n) # MATRIX OF DATA SPLITTED FOR POSTERIOR COMPUTATION
   post_rho = posterior(k,gamma_k,rho_n)            # POSTERIOR OF GIVEN rho_n
   
+  post_vector <- posteriors_vector(y, rho_n) 
   sum = 0
+  max_temp = max(post_vector)
   for (count2 in 1:length(post_vector)){
     sum = sum + exp( 0.5*( post_vector[count2] - max_temp))
   }
   
   out = 0.5*(max_temp - post_rho) + log(sum)              # FINAL VALUE OF Z_sqrt_x
-  return (out)                       
+  return (out) 
   
 }
 
+
 # FIRST SKETCH Q_fraction ------------------------------------------------------------------
+
 
 Q_fraction <- function(y, rho_n, rho_n_proposal, post_rho, post_rho_proposal){
   
@@ -138,11 +151,10 @@ Q_fraction <- function(y, rho_n, rho_n_proposal, post_rho, post_rho_proposal){
   return (out)
 }
 
-
 # FIRST SKETCH alpha FUNCTION ----------------------------------------------------------------------
 
 our_alpha <- function(y, rho_n_proposal, rho_n, m_0){ # INPUT: DATA y,NEW POSSIBLE PARTITION rho_n_proposal
-                                                      # AND THE OLD ONE rho_n, MEAN m_0
+  # AND THE OLD ONE rho_n, MEAN m_0
   # COMPUTATION OF POSTERIORS
   gamma_k_proposal <- gamma_splitting_MULTIVARIATE(y,rho_n_proposal)
   k_proposal <- length(rho_n_proposal)
@@ -162,4 +174,3 @@ our_alpha <- function(y, rho_n_proposal, rho_n, m_0){ # INPUT: DATA y,NEW POSSIB
   
   return(alpha)
 }
-
