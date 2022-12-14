@@ -112,7 +112,7 @@ y <- data
 
 n <- nrow(y)
 
-rho_n_0 = c(150,150) # initial partition
+rho_n_0 = c(60,60,60,60,60) # initial partition
 
 k = length(rho_n_0)
 
@@ -190,19 +190,20 @@ for(step in 1:Nsim){
   sigma <- sigma_prova[step]
   theta <- theta_prova[step]
   
+  post_vector_1 <- posteriors_vector(y,rho_n)
+  elem <- Q_distribution(y, rho_n, post_vector_1)    
   
-  elem <- Q_distribution(y, rho_n)    
-
   rho_n_proposal <- merge_or_split(rho_n, elem)
-      
+  post_vector_2 <- posteriors_vector(y,rho_n_proposal)
+  
   u <- log(runif(1))
-      
-  alpha = our_alpha(y,rho_n_proposal,rho_n,m_0)
-      
-  if (u <= alpha){rho_n <- rho_n_proposal}
-      
-      
-  k <- length(rho_n)
+  
+  alpha = our_alpha(y,rho_n_proposal,rho_n, post_vector_1, post_vector_2, m_0)
+  
+  if (u <= alpha){
+    rho_n <- rho_n_proposal
+    k <- length(rho_n)
+  }
       
     
   if (k > 1){     #SHUFFLE FUNCTION

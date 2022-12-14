@@ -122,13 +122,13 @@ posteriors_vector <- function(y,rho_n){              # INPUT: DATA y AND PARTITI
 
 # Z_g FUNCTION ----------------------------------------------------------------
 
-Z_sqrt_x <- function (y, rho_n){
+Z_sqrt_x <- function (y, rho_n, post_vector){
   
   k = length(rho_n)
   gamma_k <- gamma_splitting_MULTIVARIATE(y,rho_n) # MATRIX OF DATA SPLITTED FOR POSTERIOR COMPUTATION
   post_rho = posterior(k,gamma_k,rho_n)            # POSTERIOR OF GIVEN rho_n
   
-  post_vector <- posteriors_vector(y, rho_n) 
+  
   sum = 0
   max_temp = max(post_vector)
   
@@ -143,13 +143,12 @@ Z_sqrt_x <- function (y, rho_n){
 
 # Q DISTRIBUTION --------------------------------------------------------------
 
-Q_distribution <- function (y, rho_n){      # Return a sample (1 elem)  from the distribution Q(n,n^i)
+Q_distribution <- function (y, rho_n, post_vector){      # Return a sample (1 elem)  from the distribution Q(n,n^i)
   
   k = length(rho_n)
   gamma_k <- gamma_splitting_MULTIVARIATE(y,rho_n) 
   post_rho = posterior(k,gamma_k,rho_n)
   
-  post_vector <- posteriors_vector(y, rho_n)
   q_dist <- as.numeric()
   
   for (i in 1:length(post_vector)){
@@ -188,9 +187,9 @@ merge_or_split <- function(rho_n, elem){
 # Q_fraction ------------------------------------------------------------------
 
 
-Q_fraction <- function(y, rho_n, rho_n_proposal, post_rho, post_rho_proposal){
+Q_fraction <- function(y, rho_n, rho_n_proposal, post_vector_1, post_vector_2, post_rho,  post_rho_proposal){
   
-  out = Z_sqrt_x(y, rho_n) - Z_sqrt_x(y, rho_n_proposal) + post_rho - post_rho_proposal
+  out = Z_sqrt_x(y, rho_n, post_vector_1) - Z_sqrt_x(y, rho_n_proposal, post_vector_2) + post_rho - post_rho_proposal
   
   return (out)
 }
@@ -199,7 +198,7 @@ Q_fraction <- function(y, rho_n, rho_n_proposal, post_rho, post_rho_proposal){
 
 # ALPHA FUNCTION ----------------------------------------------------------------------
 
-our_alpha <- function(y, rho_n_proposal, rho_n, m_0){ # INPUT: DATA y,NEW POSSIBLE PARTITION rho_n_proposal
+our_alpha <- function(y, rho_n_proposal, rho_n, post_vector_1, post_vector_2, m_0){ # INPUT: DATA y,NEW POSSIBLE PARTITION rho_n_proposal
   # AND THE OLD ONE rho_n, MEAN m_0
   # COMPUTATION OF POSTERIORS
   gamma_k_proposal <- gamma_splitting_MULTIVARIATE(y,rho_n_proposal)
@@ -212,7 +211,7 @@ our_alpha <- function(y, rho_n_proposal, rho_n, m_0){ # INPUT: DATA y,NEW POSSIB
   post_rho_proposal = posterior(k_proposal, gamma_k_proposal, rho_n_proposal)
   
   # TWO POSSIBILITY IN LOG
-  a1 = post_rho_proposal - post_rho + Q_fraction(y, rho_n, rho_n_proposal, post_rho, post_rho_proposal)
+  a1 = post_rho_proposal - post_rho + Q_fraction(y, rho_n, rho_n_proposal, post_vector_1, post_vector_2, post_rho, post_rho_proposal)
   a2 = log(1)
   
   # DECISION
