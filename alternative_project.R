@@ -157,12 +157,31 @@ Q_distribution <- function (y, rho_n){      # Return a sample (1 elem)  from the
   }
   
   q_dist = exp(q_dist)                            # Returning in non-log probability 
-  s = sum(hhh)                          
+  s = sum(q_dist)                          
   q_dist = q_dist/s                               # Normalization of the vector
   
   elem = sample(1:(n-1), 1, prob = q_dist)        # Returning one sample whit prob. the q_distribution
   
   return(elem)
+}
+
+
+# Check if merge or split ----------------------------------------------------
+
+merge_or_split <- function(rho_n, elem){ 
+  
+  n_elem = 0
+  
+  for (j in 1:(length(rho_n) - 1)){
+    
+    n_elem = n_elem + rho_n[j]
+    
+    if (elem == n_elem){return(our_merge(j,rho_n))}
+    
+    if (elem < n_elem){return(our_split(j, elem, rho_n))}
+  }
+  
+  return(our_split(length(rho_n), elem, rho_n))
 }
 
 

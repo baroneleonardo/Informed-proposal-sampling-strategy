@@ -19,6 +19,7 @@ source("01_funzioni_log_fun_art_miss.R")
 source("02_verosomiglianza_log_fun_art_miss.R")
 source("03_alpha_log_fun_art_miss.R")
 source("alternative_project.R")
+source("our_split_and_merge.R")
 
 # SEED --------
 
@@ -153,7 +154,6 @@ z_missing[miss_index] = 1
 
 # MCMC ALGORITHM --------
 
-q = 0.4
 
 Nsim = 6*10^3
 
@@ -190,54 +190,21 @@ for(step in 1:Nsim){
   sigma <- sigma_prova[step]
   theta <- theta_prova[step]
   
-  u <- runif(1)
   
-  if (u <= q*indicator_1(k,n) + indicator_2(k)){          
-    
-    
-    if (length(rho_n) != n){      #SPLIT FUNCTION
+  elem <- Q_distribution(y, rho_n)    
+
+  rho_n_proposal <- merge_or_split(rho_n, elem)
       
-      output_list <- split(k,rho_n) # split proposal
+  u <- log(runif(1))
       
-      rho_n_proposal <- output_list[[1]]
+  alpha = our_alpha(y,rho_n_proposal,rho_n,m_0)
       
-      j_proposal <- output_list[[2]]
-      
-      u <- log(runif(1))
-      
-      alpha = our_alpha(y,rho_n_proposal,rho_n,m_0)
-      
-      if (u <= alpha){rho_n <- rho_n_proposal}
+  if (u <= alpha){rho_n <- rho_n_proposal}
       
       
-      k <- length(rho_n)
+  k <- length(rho_n)
       
-      
-    }
     
-    
-    
-  }
-  
-  if (u > q*indicator_1(k,n) + indicator_2(k)){     #MERGE FUNCTION
-    
-    output_list <- merge(k,rho_n) # merge proposal
-    
-    rho_n_proposal <- output_list[[1]]
-    
-    j_proposal <- output_list[[2]]
-    
-    u <- log(runif(1))
-    
-    alpha = our_alpha(y,rho_n_proposal,rho_n,m_0)
-    
-    if (u <= alpha){rho_n <- rho_n_proposal}
-    
-    k <- length(rho_n)
-    
-  }
-  
-  
   if (k > 1){     #SHUFFLE FUNCTION
     
     rho_n_proposal <- shuffle(k,rho_n) #  shuffle proposal
