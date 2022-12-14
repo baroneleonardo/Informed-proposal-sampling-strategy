@@ -18,7 +18,7 @@ setwd("C:\\Users\\Leonardo\\Documents\\POLIMI\\Bayesian-Project\\Informed-propos
 source("01_funzioni_log_fun_art_miss.R")
 source("02_verosomiglianza_log_fun_art_miss.R")
 source("03_alpha_log_fun_art_miss.R")
-source("project.R")
+source("alternative_project.R")
 
 # SEED --------
 
@@ -153,7 +153,7 @@ z_missing[miss_index] = 1
 
 # MCMC ALGORITHM --------
 
-q <- runif(1)
+q = 0.4
 
 Nsim = 6*10^3
 
@@ -408,8 +408,9 @@ for(step in 1:Nsim){
   # EFFECTIVE SAMPLE SIZE 
   
   effective_sample[step] = length(rho_n) - 1 
-  print(rho_n)
   
+  print(rho_n)
+
 }
 
 

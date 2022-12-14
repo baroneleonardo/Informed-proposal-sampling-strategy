@@ -138,7 +138,6 @@ Q_fraction <- function(y, rho_n, rho_n_proposal, post_rho, post_rho_proposal){
   return (out)
 }
 
-
 # FIRST SKETCH alpha FUNCTION ----------------------------------------------------------------------
 
 our_alpha <- function(y, rho_n_proposal, rho_n, m_0){ # INPUT: DATA y,NEW POSSIBLE PARTITION rho_n_proposal
