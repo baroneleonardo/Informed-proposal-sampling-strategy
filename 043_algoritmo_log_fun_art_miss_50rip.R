@@ -112,7 +112,7 @@ y <- data
 
 n <- nrow(y)
 
-rho_n_0 = c(60,60,60,60,60) # initial partition
+rho_n_0 = c(150,150) # initial partition
 
 k = length(rho_n_0)
 
@@ -155,7 +155,7 @@ z_missing[miss_index] = 1
 # MCMC ALGORITHM --------
 
 
-Nsim = 6*10^3
+Nsim = 2*10^3
 
 rho_n <- rho_n_0 #all'inzio il vettore n coincide con la partitizione specificata in partenza
 
