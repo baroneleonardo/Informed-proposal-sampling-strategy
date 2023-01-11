@@ -157,7 +157,7 @@ full_conditional_gamma <- function(n, k, rho_n, sigma, theta, gamma, gamma_k){
   
   ##--##
   
-  d     =  nbasis = 3
+  d     =  nbasis = n_col
   phi_0 = phi_0
   nu_0  =  nu_0 
   m_0   = m_0

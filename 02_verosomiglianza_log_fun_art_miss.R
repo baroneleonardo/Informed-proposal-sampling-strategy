@@ -133,7 +133,7 @@ likelihood <- function(gamma_k,k,rho_n){
   
   vettore_veros <- as.numeric(0)
   
-  nbasis = 3 # Insert the number of columns of Y 
+  nbasis = n_col # Insert the number of columns of Y 
   
   k_0 = k_0 
   

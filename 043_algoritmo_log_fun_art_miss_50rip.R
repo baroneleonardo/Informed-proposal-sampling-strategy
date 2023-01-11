@@ -10,6 +10,7 @@ library("MASS")
 library("FAdist")
 library("combinat")
 library("mvtnorm")
+library("mcclust")   # Library for Random Index function
 
 #setwd("C:\\Users\\danes\\Desktop\\Tesi\\Codice\\Codici_articolo")
 setwd("C:\\Users\\Leonardo\\Documents\\POLIMI\\Bayesian-Project\\Informed-proposal-sampling-strategy")
@@ -20,6 +21,8 @@ source("02_verosomiglianza_log_fun_art_miss.R")
 source("03_alpha_log_fun_art_miss.R")
 source("alternative_project.R")
 source("our_split_and_merge.R")
+source("read_data.R")  # Data related to COVID-19
+source("exchange_data.R") # Data relate to EXCHANGE RATE
 
 # SEED --------
 
@@ -35,75 +38,66 @@ VI_vec <- as.numeric()
 
 for(sim in 1:1){   # 50
 
-# DATA SIMULATION --------
+# # DATA SIMULATION --------
+# 
+# gamma_sim_1 = 0.5
+# gamma_sim_2 = 0.5
+# gamma_sim_3 = 0.5
+# 
+# mu_1 <- c(-2,-2,-2)
+# mu_2 <- c(3,3,3)
+# mu_3 <- c(-1,-1,-1)
+# 
+# 
+# sigma_1 = sigma_2 = sigma_3 = matrix(0, nrow = 3, ncol = 3)
+# 
+# 
+# diag(sigma_1) = c(0.5,0.5,0.5)
+# 
+# #sigma_1[1,2]  = 0.2
+# #sigma_1[1,3]  = 0.3
+# #sigma_1[2,1]  = 0.2
+# #sigma_1[3,1]  = 0.3
+# 
+# 
+# diag(sigma_2) <- c(0.5,0.5,0.5)
+# 
+# diag(sigma_3) <- c(0.5,0.5,0.5)
+# #sigma_3[2,3]  = 0.1
+# #sigma_3[3,2]  = 0.1
+# 
+# data_scenario_1 <- as.data.frame(matrix(nrow = 300, ncol = 3))
+# 
+# data_scenario_1[1,] = mu_1
+# 
+# for(i in 2:100){ 
+#   
+#   data_scenario_1[i,] = gamma_sim_1*data_scenario_1[i-1,] + (1-gamma_sim_1)*mu_1 + mvrnorm(n = 1,mu = rep(0,3), Sigma =  sigma_1)
+#   
+# }
+# 
+# 
+# data_scenario_1[101,] = mu_2
+# 
+# for(i in 102:200){ 
+#   
+#   data_scenario_1[i,] = gamma_sim_2*data_scenario_1[i-1,] + (1-gamma_sim_2)*mu_2 + mvrnorm(n = 1,  mu = rep(0,3), Sigma =  sigma_2)
+#   
+# }
+# 
+# data_scenario_1[201,] = mu_3
+# 
+# for(i in 202:300){ 
+#   
+#   data_scenario_1[i,] = gamma_sim_3*data_scenario_1[i-1,] + (1-gamma_sim_3)*mu_3 + mvrnorm(n = 1, mu = rep(0,3), Sigma =  sigma_3)
+#   
+# }
 
-gamma_sim_1 = 0.5
-gamma_sim_2 = 0.5
-gamma_sim_3 = 0.5
-
-mu_1 <- c(-2,-2,-2)
-mu_2 <- c(3,3,3)
-mu_3 <- c(-1,-1,-1)
-
-
-sigma_1 = sigma_2 = sigma_3 = matrix(0, nrow = 3, ncol = 3)
-
-
-diag(sigma_1) = c(0.5,0.5,0.5)
-
-#sigma_1[1,2]  = 0.2
-#sigma_1[1,3]  = 0.3
-#sigma_1[2,1]  = 0.2
-#sigma_1[3,1]  = 0.3
-
-
-diag(sigma_2) <- c(0.5,0.5,0.5)
-
-diag(sigma_3) <- c(0.5,0.5,0.5)
-#sigma_3[2,3]  = 0.1
-#sigma_3[3,2]  = 0.1
-
-data_scenario_1 <- as.data.frame(matrix(nrow = 300, ncol = 3))
-
-data_scenario_1[1,] = mu_1
-
-for(i in 2:100){ 
+# data <- data_scenario_1
+data <- dati_finali_log  # Data related to COVID-19
+# data <- dati_exchange # Data related to EXCHANGE RATE
   
-  data_scenario_1[i,] = gamma_sim_1*data_scenario_1[i-1,] + (1-gamma_sim_1)*mu_1 + mvrnorm(n = 1,mu = rep(0,3), Sigma =  sigma_1)
-  
-}
-
-
-data_scenario_1[101,] = mu_2
-
-for(i in 102:200){ 
-  
-  data_scenario_1[i,] = gamma_sim_2*data_scenario_1[i-1,] + (1-gamma_sim_2)*mu_2 + mvrnorm(n = 1,  mu = rep(0,3), Sigma =  sigma_2)
-  
-}
-
-data_scenario_1[201,] = mu_3
-
-for(i in 202:300){ 
-  
-  data_scenario_1[i,] = gamma_sim_3*data_scenario_1[i-1,] + (1-gamma_sim_3)*mu_3 + mvrnorm(n = 1, mu = rep(0,3), Sigma =  sigma_3)
-  
-}
-
-data <- data_scenario_1
-
-
 # PARAMETERS --------
-
-#
-m_0 = rep(0,3)
-
-k_0 = 0.25
-
-nu_0 = 4 
-
-phi_0 = diag(1,nrow = 3, ncol = 3)
-#
 
 a = b = 1
 c = 0.1
@@ -111,12 +105,23 @@ c = 0.1
 y <- data
 
 n <- nrow(y)
+n_col <- ncol(y)
 
-rho_n_0 = c(150,150) # initial partition
+rho_n_0 = c(181,181) # initial partition
 
 k = length(rho_n_0)
 
 frequenze = rep(0, n) #vettore frequenze punti di cambio
+
+#
+m_0 = rep(0, n_col)
+
+k_0 = 0.25
+
+nu_0 = 4 
+
+phi_0 = diag(1,nrow = n_col, ncol = n_col)
+#
 
 
 ## IMPORT FUNZIONI C++
@@ -389,7 +394,7 @@ partitions_no_burn_in <- partitions[(1*10^3 + 1):length(partitions)] #remove bur
 
 sourceCpp("wade.cpp") # SPOSTARE IL FILE NELLA STESSA CARTELLA DEL CODICE
 
-X <- matrix(data = NA, nrow = length(partitions) - 1*10^3, ncol = 300)
+X <- matrix(data = NA, nrow = length(partitions) - 1*10^3, ncol = n)
 
 for (i in 1:length(partitions_no_burn_in)){
   for (j in 1:length(partitions_no_burn_in[[i]])){
@@ -435,32 +440,32 @@ print(sim)
 
 }
 
-
-vec_true <- as.character()
-
-vec_true[1:100] <- "1"
-vec_true[101:200] <- "2"
-vec_true[201:300] <- "3"
-
-for(j in 1:length(list_of_partitions)){
-  partition <- cumsum(list_of_partitions[[j]])
-  vec <- rep("0", n)
-  if(length(partition) != 1){
-    vec[1:partition[1]] <- "1"
-    
-    counter = 2
-    for(i in 1:(length(partition)-1)){
-      vec[(partition[i]+1):partition[i+1]] = as.character(counter)
-      counter = counter + 1
-    }
-  }
-  VI_vec[j] = VI(vec,vec_true)
-} 
+# 
+# vec_true <- as.character()
+# 
+# vec_true[1:100] <- "1"
+# vec_true[101:200] <- "2"
+# vec_true[201:300] <- "3"
+# 
+# for(j in 1:length(list_of_partitions)){
+#   partition <- cumsum(list_of_partitions[[j]])
+#   vec <- rep("0", n)
+#   if(length(partition) != 1){
+#     vec[1:partition[1]] <- "1"
+#     
+#     counter = 2
+#     for(i in 1:(length(partition)-1)){
+#       vec[(partition[i]+1):partition[i+1]] = as.character(counter)
+#       counter = counter + 1
+#     }
+#   }
+#   VI_vec[j] = VI(vec,vec_true)
+# } 
 
 
 
 mean(unlist(lapply(list_of_partitions, FUN = length))) #AVERAGE NUMBER OF BLOCKS
-mean(VI_vec) #AVERAGE VALUE OF VI 
+# mean(VI_vec) #AVERAGE VALUE OF VI 
 
 print(mean(unlist(list_of_gamma))) #ESTIMATED GAMMA
 print(mean(unlist(list_of_sigma))) #ESTIMATED SIGMA
