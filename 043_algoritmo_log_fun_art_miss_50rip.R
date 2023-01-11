@@ -233,8 +233,11 @@ for(step in 1:Nsim){
   
   # RANDOM INDEX VECTOR
   
-  # RI = arandi(c(100,100,100), rho_n)
-  # RI_vector[step] = RI 
+  cl1 = vec_of_group(c(100,100,100),3)
+  cl2 = vec_of_group(rho_n, length(rho_n))
+  
+  RI = arandi(cl1, cl2)
+  RI_vector[step] = RI 
   
   # INFERENZA SU GAMMA 
   

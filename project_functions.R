@@ -219,3 +219,17 @@ our_alpha <- function(y, rho_n_proposal, rho_n, post_vector_1, post_vector_2, m_
   
   return(alpha)
 }
+
+# VECTOR USED IN RANDOM INDEX -------------------------------------------------
+
+vec_of_group <- function(rho_n, k){
+  v <- as.numeric()
+  for (i in 1:k){
+      v <- c(v, rep(i,rho_n[i]))
+  }
+  return(v)
+}
+
+
+
+
