@@ -21,4 +21,6 @@ dati_exchange <- as.data.frame(sapply(dati_exchange , as.numeric))
 dati_exchange <- na.omit(dati_exchange)
 
 # Set in LOG
-# dati_exchange[,c(1,2,3)] <- log(dati_exchange[,c(1,2,3)])
+dati_exchange[,c(1,2,3)] <- -log(dati_exchange[,c(1,2,3)])
+
+
