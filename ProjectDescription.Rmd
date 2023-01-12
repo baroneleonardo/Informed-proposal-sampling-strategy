@@ -1,5 +1,5 @@
 ---
-title: "ProjectDescription"
+title: "Results on Data"
 output: 
   html_document: 
     theme: sandstone
@@ -10,11 +10,13 @@ theme: sandstone
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+### Simulation study
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Through synthetic data, we investigate the efficiency and the convergence of the model compared to the one implemented in *"Bayesian nonparametric change point detection for multivariate time series with missing observations"* by Danese and Corradin.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+We set 1000 iteration - 500 burning
+
+At each step we've computed the Random Index (stored in a vector) useful to evaluate the clustering performance as well as to visualize how fast the convergence to the true partition is happening. We've also compared the most common partition; gamma, theta and sigma estimate of both the model.
 
 ```{r cars}
 ```

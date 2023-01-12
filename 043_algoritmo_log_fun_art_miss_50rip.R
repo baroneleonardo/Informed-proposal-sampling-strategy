@@ -11,7 +11,6 @@ library("FAdist")
 library("combinat")
 library("mvtnorm")
 library("mcclust")   # Library for Random Index function
-
 #setwd("C:\\Users\\danes\\Desktop\\Tesi\\Codice\\Codici_articolo")
 setwd("C:\\Users\\Leonardo\\Documents\\POLIMI\\Bayesian-Project\\Informed-proposal-sampling-strategy")
 
@@ -23,8 +22,8 @@ source("project_functions.R")
 source("project_split_and_merge.R")
 
 ## IMPORT THE DATASET
-# source("read_data.R")  # Data related to COVID-19
-# source("exchange_data.R") # Data relate to EXCHANGE RATE
+#source("read_data.R")  # Data related to COVID-19
+ source("exchange_data.R") # Data relate to EXCHANGE RATE
 
 # SEED --------
 
@@ -95,9 +94,11 @@ for(i in 202:300){
 
 }
 
-data <- data_scenario_1
-# data <- dati_finali_log  # Data related to COVID-19
-# data <- dati_exchange # Data related to EXCHANGE RATE
+# data <- data_scenario_1
+
+# If you use this remember to comment RI
+#data <- dati_finali_log  # Data related to COVID-19
+data <- dati_exchange # Data related to EXCHANGE RATE
   
 # PARAMETERS --------
 
@@ -109,7 +110,8 @@ y <- data
 n <- nrow(y)
 n_col <- ncol(y)
 
-rho_n_0 = c(150,150) # initial partition
+half_data = n/2 # Use only if n is even
+rho_n_0 = c(half_data,half_data) # initial partition
 
 k = length(rho_n_0)
 
@@ -233,11 +235,14 @@ for(step in 1:Nsim){
   
   # RANDOM INDEX VECTOR
   
-  cl1 = vec_of_group(c(100,100,100),3)
-  cl2 = vec_of_group(rho_n, length(rho_n))
+  # Create the vector of n element each one containing the group to which it belongs
+  # cl1 = rep(1:3, c(100,100,100))
+  # cl2 = rep(1:length(rho_n), rho_n)
+  # 
+  # RI = arandi(cl1, cl2)
+  # RI_vector[step] = RI 
   
-  RI = arandi(cl1, cl2)
-  RI_vector[step] = RI 
+  # print(RI)
   
   # INFERENZA SU GAMMA 
   
