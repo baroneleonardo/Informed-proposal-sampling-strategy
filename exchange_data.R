@@ -1,4 +1,3 @@
-
 path = "exchange_rate.tsv"
 
 dati_exchange <- read.table(file = path, sep = '\t', header = TRUE)
@@ -20,8 +19,10 @@ dati_exchange <- as.data.frame(sapply(dati_exchange , as.numeric))
 
 dati_exchange <- na.omit(dati_exchange)
 
+
 # Set in LOG
 dati_exchange[,c(1,2,3)] <- log(dati_exchange[,c(1,2,3)])
+ # dati_exchange = dati_exchange*100
 
 # Divided data
 dati_CHF = dati_exchange[,1]
@@ -36,9 +37,14 @@ lines(dati_GBP, lwd = 2, col = "darkblue")
 lines(dati_USD, lwd = 2, col = "darkgreen")
 legend(0,0, legend = c("EU/CHF", "EU/GBP", "EU/USD"), lwd = 3, 
        cex=0.42, col = c("darkred","darkblue","darkgreen"))
-
-
-
+abline(v = 98)
+abline(v = 140)
+abline(v = 166)
+abline(v = 210)
+abline(v = 228)
+abline(v = 246)
+abline(v = 272)
+dati_exchange = as.data.frame(cbind(dati_CHF, dati_USD))
 
 
 
