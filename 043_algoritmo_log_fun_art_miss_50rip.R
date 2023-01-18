@@ -19,7 +19,6 @@ source("02_verosomiglianza_log_fun_art_miss.R")
 source("03_alpha_log_fun_art_miss.R")
 source("project_functions.R")
 source("project_split_and_merge.R")
-source("DefineRandomInitialPartition.R")
 
 ## IMPORT THE DATASET
 # source(".\\data\\read_data.R")  # Data related to COVID-19
