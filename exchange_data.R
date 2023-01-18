@@ -22,7 +22,7 @@ dati_exchange <- na.omit(dati_exchange)
 
 # Set in LOG
 dati_exchange[,c(1,2,3)] <- log(dati_exchange[,c(1,2,3)])
- # dati_exchange = dati_exchange*100
+dati_exchange = dati_exchange*100
 
 # Divided data
 dati_CHF = dati_exchange[,1]
@@ -44,6 +44,7 @@ abline(v = 210)
 abline(v = 228)
 abline(v = 246)
 abline(v = 272)
+
 dati_exchange = as.data.frame(cbind(dati_CHF, dati_USD))
 
 
