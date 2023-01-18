@@ -1,5 +1,5 @@
 
-path = "dpc-covid19-ita-regioni.csv"
+path = ".\\data\\dpc-covid19-ita-regioni.csv"
 
 dati_covid_regioni <- read.csv(file = path)
 

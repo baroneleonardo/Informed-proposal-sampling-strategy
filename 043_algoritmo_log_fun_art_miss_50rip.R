@@ -22,8 +22,8 @@ source("project_split_and_merge.R")
 source("DefineRandomInitialPartition.R")
 
 ## IMPORT THE DATASET
-# source("read_data.R")  # Data related to COVID-19
-# source("exchange_data.R") # Data relate to EXCHANGE RATE
+# source(".\\data\\read_data.R")  # Data related to COVID-19
+# source(".\\data\\exchange_data.R") # Data relate to EXCHANGE RATE
 
 # SEED --------
 
