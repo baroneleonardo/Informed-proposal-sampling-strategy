@@ -29,7 +29,7 @@ posteriors_vector <- function(y,rho_n){              # INPUT: DATA y AND PARTITI
   if ( k==2 ){
     
     for (l in 1:rho_n[1]){                 # FOR EACH ELEMENT EXCEPT THE LAST ONE IN FIRST GROUP DO A SPLIT, 
-      # ON THE LAST ELEMENT DO A MERGE
+      
       ifelse(l != rho_n[1], {rho_temp <- c(l,rho_n[1]-l,rho_n[2])},
              {rho_temp <- c(rho_n[1]+rho_n[2])})
       post_rho_temp = posterior(length(rho_temp), gamma_splitting_MULTIVARIATE(y,rho_temp), rho_temp)
@@ -55,11 +55,10 @@ posteriors_vector <- function(y,rho_n){              # INPUT: DATA y AND PARTITI
   # 3RD CASE: FIRST GROUP, LAST GROUP AND INTERMEDIARY GROUPS
   
   if( k>2 ){  
-    for (j in 1 : length(rho_n)){         # FOR EACH GROUP...
-      for (l in 1 : rho_n[j]){            # FOR EACH ELEMENT...
+    for (j in 1 : length(rho_n)){         
+      for (l in 1 : rho_n[j]){            
         
         # DIFFERENTIATION FOR THE FIRST GROUP
-        
         if( j==1 ){
           
           ifelse(l != rho_n[j], {rho_temp <- c(l,rho_n[j]-l,rho_n[(j+1):length(rho_n)])}, # Split
@@ -75,7 +74,6 @@ posteriors_vector <- function(y,rho_n){              # INPUT: DATA y AND PARTITI
         else{
           
           # DIFFERENTIATION FOR THE LAST GROUP
-          
           if (j == k){
             
             if( l!=rho_n[j] ){
@@ -90,7 +88,6 @@ posteriors_vector <- function(y,rho_n){              # INPUT: DATA y AND PARTITI
           }
           
           # INTERMEDIARY CASES
-          
           else{                      # SPLIT PART
             
             ifelse(l != rho_n[j], {rho_temp <- c(rho_n[1:(j-1)],l,rho_n[j]-l,rho_n[(j+1):length(rho_n)])},
@@ -106,11 +103,7 @@ posteriors_vector <- function(y,rho_n){              # INPUT: DATA y AND PARTITI
             # max_temp = max(max_temp, post_rho_temp)
             count = count + 1
             post_vector[count] = post_rho_temp
-            
-            
           }
-          
-          
         }
       }
     }
@@ -199,8 +192,7 @@ Q_fraction <- function(y, rho_n, rho_n_proposal, post_vector_1, post_vector_2, p
 # ALPHA FUNCTION ----------------------------------------------------------------------
 
 our_alpha <- function(y, rho_n_proposal, rho_n, post_vector_1, post_vector_2, m_0){ # INPUT: DATA y,NEW POSSIBLE PARTITION rho_n_proposal
-  # AND THE OLD ONE rho_n, MEAN m_0
-  # COMPUTATION OF POSTERIORS
+  
   gamma_k_proposal <- gamma_splitting_MULTIVARIATE(y,rho_n_proposal)
   k_proposal <- length(rho_n_proposal)
   
@@ -210,24 +202,86 @@ our_alpha <- function(y, rho_n_proposal, rho_n, post_vector_1, post_vector_2, m_
   post_rho = posterior(k, gamma_k, rho_n)
   post_rho_proposal = posterior(k_proposal, gamma_k_proposal, rho_n_proposal)
   
-  # TWO POSSIBILITY IN LOG
   a1 = post_rho_proposal - post_rho + Q_fraction(y, rho_n, rho_n_proposal, post_vector_1, post_vector_2, post_rho, post_rho_proposal)
   a2 = log(1)
   
-  # DECISION
   alpha = min(a1, a2)
   
   return(alpha)
 }
 
+# SPLIT function --------------------------------------------------------------
+
+our_split <- function( j,elem,rho_n ){
+  
+  output <- list()
+  l = elem
+  
+  if (j!=1){
+    
+    for ( i in 1:(j-1) ){ l = l - rho_n[i] }
+  }
+  
+  if(j != 1){
+    
+    # Split the j-group in [l; length(j-group)-l]
+    ifelse(j != length(rho_n), {rho_n <- c(rho_n[1:(j-1)],l,rho_n[j]-l,rho_n[(j+1):length(rho_n)])},
+           {rho_n <- c(rho_n[1:(j-1)],l,rho_n[j]-l)}) # If I'm in the last group
+  }
+  
+  # If I'm in the first group
+  if(j == 1){
+    
+    ifelse(j != length(rho_n), {rho_n <- c(l,rho_n[j]-l,rho_n[(j+1):length(rho_n)])},
+           {rho_n <- c(l,rho_n[j]-l)})
+  }
+  
+  output = rho_n      # First group of the split
+  
+  return(output)
+  
+}
+
+# MERGE function --------------------------------------------------------------
+
+our_merge <- function(j,rho_n){
+  
+  output <- list()
+  c <- length(rho_n)
+  
+  if (c != 1){
+    
+    if (c != 2){
+      
+      ifelse(j != 1, {
+        ifelse(j == (length(rho_n) - 1),{rho_n <- c(rho_n[1:(j-1)],rho_n[j] + rho_n[(j+1)])},
+               {rho_n <- c(rho_n[1:(j-1)],rho_n[j] + rho_n[(j+1)], rho_n[(j+2):length(rho_n)])})
+      },
+      {rho_n <- c(rho_n[j] + rho_n[(j+1)], rho_n[(j+2):length(rho_n)])})
+    }
+    
+    if (c == 2){
+      j <- 1
+      rho_n <- c(rho_n[j] + rho_n[(j+1)])
+    }
+  } 
+  
+  output = rho_n
+  
+  return(output)
+  
+}
+
+# Create a RANDOM INITIAL PARTITION from the dataset --------------------------
+
 random_partition <- function(n){
   
-  ### Set random initial partition
+  # Set random initial partition
   time_indexes = 1:n
-  k = sample(1:round(n/10, digits = 1), size = 1) # number of change-points
-  changepoint_positions = sort( sample(1:(n-1), size = k, replace = F) ) #sample change-points locations
+  k = sample(1:round(n/10, digits = 1), size = 1) # Number of change-points
+  changepoint_positions = sort( sample(1:(n-1), size = k, replace = F) ) # Sample change-points locations
   
-  # convert the previous object in rho_n_0, the vector of cardinalities of the groups
+  # Convert the previous object in rho_n_0, the vector of cardinalities of the groups
   rho_n_0 = c(changepoint_positions, n)
   rho_n_0[2:(k+1)] = rho_n_0[2:(k+1)] - rho_n_0[1:k]  
   return(rho_n_0)

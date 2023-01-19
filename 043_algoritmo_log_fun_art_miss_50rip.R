@@ -18,7 +18,6 @@ source("01_funzioni_log_fun_art_miss.R")
 source("02_verosomiglianza_log_fun_art_miss.R")
 source("03_alpha_log_fun_art_miss.R")
 source("project_functions.R")
-source("project_split_and_merge.R")
 
 ## IMPORT THE DATASET
 # source(".\\data\\read_data.R")  # Data related to COVID-19
@@ -111,11 +110,12 @@ n_col <- ncol(y)
 
 # n_2 = n/2            # Use only if n is even
 # rho_n_0 = c(n/2,n/2) # initial partition
+
 rho_n_0 = random_partition(n)
 
 k = length(rho_n_0)
 
-frequenze = rep(0, n) #v ettore frequenze punti di cambio
+frequenze = rep(0, n) # vettore frequenze punti di cambio
 
 #
 m_0 = rep(0, n_col)
