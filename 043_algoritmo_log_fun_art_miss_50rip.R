@@ -11,7 +11,6 @@ library("combinat")
 library("mvtnorm")
 library("mcclust")   # Library for Random Index function
 
-#setwd("C:\\Users\\danes\\Desktop\\Tesi\\Codice\\Codici_articolo")
 setwd("C:\\Users\\Leonardo\\Documents\\POLIMI\\Bayesian-Project\\Informed-proposal-sampling-strategy")
 
 ## IMPORT R function
@@ -438,3 +437,13 @@ mean(unlist(lapply(list_of_partitions, FUN = length))) #AVERAGE NUMBER OF BLOCKS
 print(mean(unlist(list_of_gamma))) #ESTIMATED GAMMA
 print(mean(unlist(list_of_sigma))) #ESTIMATED SIGMA
 print(mean(unlist(list_of_theta))) #ESTIMATED THETA
+
+# Save the data in a file ------
+result = list("gamma" = mean(unlist(list_of_gamma)), 
+              "sigma" = mean(unlist(list_of_sigma)),
+              "theta" = mean(unlist(list_of_theta)),
+              "final_partition" = final_partition_VI,
+              "Random_index" = RI_vector)   # Use only for simulated data
+
+file_name = paste("./",".RData", sep="") # Insert the name of the file ./.....
+save(result, file = file_name)
