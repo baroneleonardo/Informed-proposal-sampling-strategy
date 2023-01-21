@@ -28,7 +28,6 @@ source(".\\data\\simulated_data.R")
 # SEED --------
 
 set.seed(123)
-
 timestamp()
 
 list_of_partitions <- list()
@@ -43,10 +42,8 @@ for(sim in 1:1){   # 50
   
 data <- data_scenario_1         # SIMULATED DATA
 
-# comment RI for this data
-
+# If you use real data comment the RI section
 # data <- dati_finali_log       # COVID-19 DATA
-
 # data <- dati_exchange         # EXCHANGE RATE DATA
   
 # PARAMETERS --------
@@ -58,9 +55,6 @@ y <- data
 
 n <- nrow(y)
 n_col <- ncol(y)
-
-# n_2 = n/2            # Use only if n is even
-# rho_n_0 = c(n/2,n/2) # initial partition
 
 rho_n_0 = random_partition(n)
 
@@ -114,8 +108,8 @@ z_missing[miss_index] = 1
 
 # MCMC ALGORITHM --------
 
-
 Nsim = 10^3
+burn_in = 500
 
 rho_n <- rho_n_0 #all'inzio il vettore n coincide con la partitizione specificata in partenza
 
@@ -147,6 +141,7 @@ effective_sample <- as.numeric()
 RI_vector <- as.numeric()
 
 for(step in 1:Nsim){
+  print(step)
   
   gamma <- gamma_prova[step]
   sigma <- sigma_prova[step]
@@ -337,7 +332,7 @@ for(step in 1:Nsim){
   
   # CREAZIONE VETTORE FREQUENZA PUNTI DI CAMBIO 
   
-  if(step > 20000){
+  if(step > burn_in){
     
     frequenze[cumsum(rho_n)] = frequenze[cumsum(rho_n)] + 1
     
@@ -350,18 +345,19 @@ for(step in 1:Nsim){
   effective_sample[step] = length(rho_n) - 1 
   
   print(rho_n)
+  print("")
 
 }
 
 
 # VI LOSS --------
 
-partitions_no_burn_in <- partitions[(500 + 1):length(partitions)] #remove burn-in period
+partitions_no_burn_in <- partitions[(burn_in + 1):length(partitions)] #remove burn-in period
 #partitions_no_burn_in <- partitions
 
 sourceCpp("wade.cpp") # SPOSTARE IL FILE NELLA STESSA CARTELLA DEL CODICE
 
-X <- matrix(data = NA, nrow = length(partitions) - 500, ncol = n)
+X <- matrix(data = NA, nrow = length(partitions) - burn_in, ncol = n)
 
 for (i in 1:length(partitions_no_burn_in)){
   for (j in 1:length(partitions_no_burn_in[[i]])){
@@ -438,7 +434,7 @@ print(mean(unlist(list_of_gamma))) #ESTIMATED GAMMA
 print(mean(unlist(list_of_sigma))) #ESTIMATED SIGMA
 print(mean(unlist(list_of_theta))) #ESTIMATED THETA
 
-# Save the data in a file ------
+# Save the data in a file -----
 result = list("gamma" = mean(unlist(list_of_gamma)), 
               "sigma" = mean(unlist(list_of_sigma)),
               "theta" = mean(unlist(list_of_theta)),
