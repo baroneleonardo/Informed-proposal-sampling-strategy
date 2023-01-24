@@ -141,7 +141,6 @@ effective_sample <- as.numeric()
 RI_vector <- as.numeric()
 
 for(step in 1:Nsim){
-  print(step)
   
   gamma <- gamma_prova[step]
   sigma <- sigma_prova[step]
@@ -187,8 +186,6 @@ for(step in 1:Nsim){
   
   RI = arandi(cl1, cl2)
   RI_vector[step] = RI
-
-  print(RI)
 
   # INFERENZA SU GAMMA 
   
@@ -344,6 +341,8 @@ for(step in 1:Nsim){
   
   effective_sample[step] = length(rho_n) - 1 
   
+  print(step)
+  print(RI)
   print(rho_n)
   print("")
 
@@ -439,6 +438,7 @@ result = list("gamma" = mean(unlist(list_of_gamma)),
               "sigma" = mean(unlist(list_of_sigma)),
               "theta" = mean(unlist(list_of_theta)),
               "final_partition" = final_partition_VI,
+              "frequenze" = frequenze,
               "Random_index" = RI_vector)   # Use only for simulated data
 
 file_name = paste("./",".RData", sep="") # Insert the name of the file ./.....
