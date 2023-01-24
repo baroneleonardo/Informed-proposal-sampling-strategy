@@ -10,6 +10,7 @@ library("FAdist")
 library("combinat")
 library("mvtnorm")
 library("mcclust")   # Library for Random Index function
+library("usefun")
 
 setwd("C:\\Users\\Leonardo\\Documents\\POLIMI\\Bayesian-Project\\Informed-proposal-sampling-strategy")
 
@@ -45,6 +46,10 @@ data <- data_scenario_1         # SIMULATED DATA
 # If you use real data comment the RI section
 # data <- dati_finali_log       # COVID-19 DATA
 # data <- dati_exchange         # EXCHANGE RATE DATA
+
+# exp_val = c(mean(dati_exchange$`EU/CHF`),
+#             mean(dati_exchange$`EU/GBP`),
+#             mean(dati_exchange$`EU/USD`))
   
 # PARAMETERS --------
 
@@ -64,6 +69,7 @@ frequenze = rep(0, n) # vettore frequenze punti di cambio
 
 #
 m_0 = rep(0, n_col)
+# m_0 = exp_val
 
 k_0 = 0.25
 
@@ -183,7 +189,7 @@ for(step in 1:Nsim){
   # Create the vector of n element each one containing the group to which it belongs
   cl1 = rep(1:3, c(100,100,100))
   cl2 = rep(1:length(rho_n), rho_n)
-  
+
   RI = arandi(cl1, cl2)
   RI_vector[step] = RI
 
@@ -342,9 +348,9 @@ for(step in 1:Nsim){
   effective_sample[step] = length(rho_n) - 1 
   
   print(step)
-  print(RI)
+  # print(RI)
   print(rho_n)
-  print("")
+  print_empty_line()
 
 }
 
@@ -439,7 +445,15 @@ result = list("gamma" = mean(unlist(list_of_gamma)),
               "theta" = mean(unlist(list_of_theta)),
               "final_partition" = final_partition_VI,
               "frequenze" = frequenze,
-              "Random_index" = RI_vector)   # Use only for simulated data
+              "m_0" = m_0,
+              "k_0" = k_0,
+              "nu_0" = nu_0,
+              "phi_0" = phi_0,
+              "a" = a,
+              "b" = b,
+              "c" = c,
+              "Random_index" = RI_vector
+              )   
 
-file_name = paste("./",".RData", sep="") # Insert the name of the file ./.....
+file_name = paste("./...",".RData", sep="") # Insert the name of the file ./.....
 save(result, file = file_name)
